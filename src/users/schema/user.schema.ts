@@ -1,4 +1,4 @@
-import { Prop, Schema } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
 import { Role } from "../dto/create-user.dto";
 
@@ -35,3 +35,5 @@ export class User extends Document{
     })
     role: Role = Role.passenger 
 }
+
+export const UserSchema = SchemaFactory.createForClass(User)
