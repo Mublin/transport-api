@@ -19,10 +19,10 @@ export class CreateUserDto {
     @IsNotEmpty()
    @IsString()
     firstName: string
+    
    @IsString()
     lastName: string
-    @IsEnum({
-        Role
-    })
-    role: Role = Role.passenger 
+
+    @IsEnum(Role)
+    role: Role;
 }

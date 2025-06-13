@@ -30,10 +30,10 @@ export class User extends Document{
     lastName: string
 
     @Prop({
-        required: true,
-        enum: Role
+        enum: Role,
+        default: Role.passenger
     })
-    role: Role = Role.passenger 
+    role: Role 
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)
