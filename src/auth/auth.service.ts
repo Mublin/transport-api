@@ -102,13 +102,7 @@ export class AuthService {
     }
   }
 
-  findAll() {
-    return `This action returns all auth`;
-  }
 
-  findOne(id: string) {
-    return `This action returns a #${id} auth`;
-  }
 
   async updateRefreshToken(
     id: string,
