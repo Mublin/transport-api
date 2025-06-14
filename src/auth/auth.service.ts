@@ -15,6 +15,9 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
+  get(id:string){
+    return this.userService.findOne(id)
+  }
   async validateUser({
     email,
     inputPassword,
