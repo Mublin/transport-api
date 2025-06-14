@@ -19,12 +19,18 @@ export class UsersService {
   findOne(id: string) {
     return this.userModel.findById(id);
   }
+  findByEmail(email: string) {
+    return this.userModel.findOne({email: email}).exec();
+  }
 
   update(id: string, updateUserDto: UpdateUserDto) {
-    return this.userModel.findByIdAndUpdate(id, updateUserDto);
+    return this.userModel.findByIdAndUpdate(id, updateUserDto).exec();
   }
 
   remove(id: string) {
     return this.userModel.deleteOne({_id: id});
+  }
+  updateRefreshToken(id: string, token: string) {
+    return this.userModel.findByIdAndUpdate(id, {refreshToken: token}).exec();
   }
 }

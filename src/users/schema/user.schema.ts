@@ -23,6 +23,8 @@ export class User extends Document{
     })
     password: string
 
+    refreshToken?: string
+
     @Prop({
         required: true
     })
