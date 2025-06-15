@@ -36,6 +36,24 @@ export class User extends Document{
         default: Role.passenger
     })
     role: Role 
+  @Prop({
+    type: {
+      type: String,
+      enum: ['Point'],
+      default: 'Point',
+    },
+    coordinates: {
+      type: [Number], // [longitude, latitude]
+      default: [0, 0],
+    },
+  })
+  location: { type: string; coordinates: number[] }; // GeoJSON Point
+
+  @Prop({ default: true })
+  isAvailable: boolean; // Driver availability
 }
 
-export const UserSchema = SchemaFactory.createForClass(User)
+export const UserSchema = SchemaFactory.createForClass(User);
+
+// Create 2dsphere index for geospatial queries
+UserSchema.index({ location: '2dsphere' });
