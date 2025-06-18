@@ -13,9 +13,11 @@ export class UsersService {
   }
 
   findAll() {
-    return this.userModel.find().exec();
+    return this.userModel.find().select("-password").exec();
   }
-
+  findProfile(id: string) {
+    return this.userModel.findById(id).select("-password");
+  }
   findOne(id: string) {
     return this.userModel.findById(id);
   }
@@ -32,5 +34,31 @@ export class UsersService {
   }
   updateRefreshToken(id: string, token: string) {
     return this.userModel.findByIdAndUpdate(id, {refreshToken: token}).exec();
+  }
+  async findNearbyDrivers(longitude: number, latitude: number, maxDistance: number): Promise<User[]> {
+    return this.userModel.find({
+      role: 'driver',
+      isAvailable: true,
+      location: {
+        $near: {
+          $geometry: {
+            type: 'Point',
+            coordinates: [longitude, latitude],
+          },
+          $maxDistance: maxDistance, // In meters
+        },
+      },
+    }).exec();
+  }
+
+  async updateLocation(userId: string, longitude: number, latitude: number): Promise<void> {
+    await this.userModel.updateOne(
+      { _id: userId },
+      { $set: { location: { type: 'Point', coordinates: [longitude, latitude] } } },
+    );
+  }
+
+  async updateAvailability(userId: string, isAvailable: boolean): Promise<void> {
+    await this.userModel.updateOne({ _id: userId }, { $set: { isAvailable } });
   }
 }
