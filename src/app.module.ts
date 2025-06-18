@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { PaymentModule } from './payment/payment.module';
 import { DeliveryModule } from './delivery/delivery.module';
+import { OpenrouteModule } from './openroute/openroute.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { DeliveryModule } from './delivery/delivery.module';
     AuthModule,
     PaymentModule,
     DeliveryModule,
+    OpenrouteModule,
   ],
   controllers: [AppController],
   providers: [AppService],
