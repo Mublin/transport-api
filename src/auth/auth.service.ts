@@ -1,4 +1,4 @@
-import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { UsersService } from 'src/users/users.service';
@@ -6,6 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { Role } from 'src/users/dto/create-user.dto';
+
 
 @Injectable()
 export class AuthService {
@@ -15,9 +16,7 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  get(id:string){
-    return this.userService.findOne(id)
-  }
+ 
   async validateUser({
     email,
     inputPassword,
@@ -132,7 +131,38 @@ export class AuthService {
     );
     await this.userService.updateRefreshToken(id, refreshToken);
     return refreshToken;
+
   }
+    async getNewAccessToken(refreshToken: string) {
+        const payload = await this.validateRefreshToken(refreshToken)
+    if (!payload) {
+      throw new UnauthorizedException("Invalid Token")
+    }
+    const user = await this.userService.findProfile(payload.sub)
+    if (!user) {
+      throw new UnauthorizedException("Invalid Token")
+    }
+    return this.jwtService.sign({
+        sub: user._id,
+        role: user.role,
+        email: user.email,
+      });
+      
+    
+    
+  }
+
+  async validateRefreshToken (token: string){
+    let payload : any;
+    console.log(this.configService.get('JWT_REFRESH'))
+      payload = await this.jwtService.verifyAsync(token , { secret :this.configService.get('JWT_REFRESH')});
+      console.log(payload)
+      if (!payload || !payload.sub) {
+        throw new UnauthorizedException("User not found")
+      }
+      return payload
+  }
+
 
   remove(id: string) {
     return `This action removes a #${id} auth`;
